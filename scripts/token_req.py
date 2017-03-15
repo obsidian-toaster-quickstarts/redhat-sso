@@ -78,7 +78,12 @@ req = urllib2.Request(tokenURL, data)
 ignoreCert = ssl._create_unverified_context()
 handler=urllib2.HTTPSHandler(debuglevel=args.debug, context=ignoreCert)
 opener = urllib2.build_opener(handler)
-response = opener.open(req)
+try:
+    response = opener.open(req)
+except urllib2.HTTPError, e:
+    print "Failure, %s" % e
+    exit(3)
+
 tokenJson = response.read()
 token = json.loads(tokenJson)
 # Display the access token if debug > 0
