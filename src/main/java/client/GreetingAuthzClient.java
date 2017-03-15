@@ -12,14 +12,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.WebTarget;
 
+import client.authz.AuthzClient;
 import com.beust.jcommander.JCommander;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.keycloak.authorization.client.AuthzClient;
-import org.keycloak.authorization.client.Configuration;
-import org.keycloak.jose.jws.JWSInput;
-import org.keycloak.jose.jws.JWSInputException;
-import org.keycloak.representations.AccessTokenResponse;
-import org.keycloak.util.JsonSerialization;
 
 /**
  * Created by starksm on 3/14/17.
@@ -53,11 +48,6 @@ public class GreetingAuthzClient {
         }
         // Set the sso.auth.server.url used in the keycloak.json file
         System.setProperty("sso.auth.server.url", authServerURL+"/auth");
-        Configuration config = JsonSerialization.readValue(configStream, Configuration.class, true);
-        // create a new instance based on the configuration defined in keycloak.json
-        authzClient = AuthzClient.create(config);
-        AccessTokenResponse tokenResponse = authzClient.obtainAccessToken(username, username);
-        token = tokenResponse.getToken();
     }
 
     private void loadEndpoints() throws IOException, InterruptedException {

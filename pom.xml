@@ -81,11 +81,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-authz-client</artifactId>
-      <version>3.0.0.CR1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
     </dependency>
