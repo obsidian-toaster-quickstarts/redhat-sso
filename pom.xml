@@ -26,13 +26,14 @@
   <groupId>org.obsidiantoaster.quickstart</groupId>
   <artifactId>redhat-sso</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <name>sso</name>
+  <name>sso-service</name>
   <description>Red Hat SSO</description>
   <packaging>jar</packaging>
 
   <properties>
     <fabric8.version>2.2.176</fabric8.version>
     <fabric8.maven.plugin.version>3.1.92</fabric8.maven.plugin.version>
+    <keycloak.version>2.0.0.Final</keycloak.version>
     <java.version>1.8</java.version>
   </properties>
 
@@ -78,15 +79,39 @@
     </plugins>
   </build>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-authz-client</artifactId>
+      <version>3.0.0.CR1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.60</version>
+    </dependency>
+  </dependencies>
+
   <dependencyManagement>
     <dependencies>
-    <dependency>
-      <groupId>io.fabric8</groupId>
-      <artifactId>fabric8-project-bom-with-platform-deps</artifactId>
-      <version>${fabric8.version}</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
+      <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>fabric8-project-bom-with-platform-deps</artifactId>
+        <version>${fabric8.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-bom</artifactId>
+        <version>3.1.1.Final</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
