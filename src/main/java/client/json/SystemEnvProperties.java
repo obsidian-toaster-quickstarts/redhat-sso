@@ -14,19 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package client;
+package client.json;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import java.util.Properties;
 
 /**
- * The REST interface representation for the greeting endpoints
+ * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
-public interface IGreeting {
-    @GET
-    @Path("/greeting")
-    @Produces("application/json")
-    public Greeting greeting(@QueryParam("name") String name);
+public class SystemEnvProperties extends Properties {
+
+    @Override
+    public String getProperty(String key) {
+        if (key.startsWith("env.")) {
+            return System.getenv().get(key.substring(4));
+        } else {
+            return System.getProperty(key);
+        }
+    }
+
+    @Override
+    public String getProperty(String key, String defaultValue) {
+        String value = getProperty(key);
+        return value != null ? value : defaultValue;
+    }
+
 }
