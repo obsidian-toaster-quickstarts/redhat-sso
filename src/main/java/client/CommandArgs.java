@@ -23,7 +23,7 @@ import com.beust.jcommander.Parameter;
  * @see GreetingAuthzClient
  */
 public class CommandArgs {
-    @Parameter(names = "--app", description = "The name of the rest endpoint to access", required = true)
+    @Parameter(names = "--app", description = "The name of the rest endpoint to access")
     public String app;
     @Parameter(names = "--user", description = "The SSO Realm username to authenticate as")
     public String user = "alice";
@@ -33,4 +33,6 @@ public class CommandArgs {
     public String from = "World";
     @Parameter(names = "--debug", description = "The debugging level, > 0 means more verbosity")
     public int debugLevel;
+    @Parameter(names = "--displaySSOURL", description = "Obtain and display the RH SSO server auth URL and then exit")
+    public boolean displaySSOAuthURL;
 }

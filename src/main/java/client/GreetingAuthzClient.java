@@ -84,6 +84,10 @@ public class GreetingAuthzClient {
         }
         System.out.printf("Using auth server URL: %s\n", authServerURL);
         System.out.printf("Available application endpoint names: %s\n", endpoints.keySet().stream().filter(name -> !name.contains("sso")).collect(Collectors.toList()));
+        if(cmdArgs.displaySSOAuthURL) {
+            // We are done
+            System.exit(0);
+        }
 
         InputStream configStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("keycloak.json");
         if (configStream == null) {
