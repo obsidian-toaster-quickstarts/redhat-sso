@@ -1,0 +1,9 @@
+
+## Intellij files
+*.iws
+*.ipr
+*.iml
+
+target
+redhat-sso.iml
+redhat-sso.ipr

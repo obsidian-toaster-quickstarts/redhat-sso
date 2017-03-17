@@ -26,16 +26,21 @@
   <groupId>org.obsidiantoaster.quickstart</groupId>
   <artifactId>redhat-sso</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <name>sso</name>
+  <name>sso-service</name>
   <description>Red Hat SSO</description>
   <packaging>jar</packaging>
 
   <properties>
     <fabric8.version>2.2.205</fabric8.version>
     <fabric8.maven.plugin.version>3.1.92</fabric8.maven.plugin.version>
+    <keycloak.version>2.0.0.Final</keycloak.version>
+    <wildfly.swarm.version>2017.3.3</wildfly.swarm.version>
+    <java.version>1.8</java.version>
   </properties>
 
   <build>
+    <finalName>sso-client</finalName>
+
     <pluginManagement>
       <plugins>
         <plugin>
@@ -65,18 +70,94 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <manifestEntries>
+                    <Main-Class>client.GreetingAuthzClient</Main-Class>
+                    <Build-Number>1.0</Build-Number>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxb-provider</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson2-provider</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.60</version>
+    </dependency>
+  </dependencies>
+
   <dependencyManagement>
     <dependencies>
-    <dependency>
-      <groupId>io.fabric8</groupId>
-      <artifactId>fabric8-project-bom-with-platform-deps</artifactId>
-      <version>${fabric8.version}</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
+      <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>fabric8-project-bom-with-platform-deps</artifactId>
+        <version>${fabric8.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-bom</artifactId>
+        <version>3.1.1.Final</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
