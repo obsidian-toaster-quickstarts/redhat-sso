@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -59,6 +60,7 @@ public class GreetingAuthzClient {
         }
         GreetingAuthzClient client = new GreetingAuthzClient();
         client.init(cmdArgs);
+        System.out.printf("\nRequesting greeting...\n");
         Greeting greeting = client.getGreeting(cmdArgs.app, cmdArgs.from);
         System.out.printf("%s\n", greeting);
     }
@@ -81,6 +83,7 @@ public class GreetingAuthzClient {
             throw new IllegalStateException(msg);
         }
         System.out.printf("Using auth server URL: %s\n", authServerURL);
+        System.out.printf("Available application endpoint names: %s\n", endpoints.keySet().stream().filter(name -> !name.contains("sso")).collect(Collectors.toList()));
 
         InputStream configStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("keycloak.json");
         if (configStream == null) {
@@ -89,11 +92,12 @@ public class GreetingAuthzClient {
         // Set the sso.auth.server.url used in the keycloak.json file
         System.setProperty("sso.auth.server.url", authServerURL);
         Configuration config = JsonSerialization.readValue(configStream, Configuration.class, true);
+        config.setDebug(cmdArgs.debugLevel);
         // create a new instance based on the configuration defined in keycloak.json
         authzClient = AuthzClient.create(config);
         token = authzClient.obtainAccessToken(cmdArgs.user, cmdArgs.password);
         if(cmdArgs.debugLevel > 0)
-            System.out.printf("Token: %s\n", token);
+            System.out.printf("\nToken: %s\n", token);
     }
 
     private void loadEndpoints() throws IOException, InterruptedException {
@@ -135,6 +139,8 @@ public class GreetingAuthzClient {
         target.register((ClientRequestFilter) requestContext -> {
             requestContext.getHeaders().add("Authorization", "Bearer "+token);
         });
+        if(cmdArgs.debugLevel > 0)
+            target.register(new LoggingFilter());
         IGreeting greetingClient = ((ResteasyWebTarget)target).proxy(IGreeting.class);
         Greeting greeting = greetingClient.greeting(name);
         return greeting;

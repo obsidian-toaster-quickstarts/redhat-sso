@@ -26,6 +26,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 
+import client.LoggingFilter;
 import client.json.JsonSerialization;
 
 /**
@@ -59,6 +60,8 @@ public class AuthzClient {
             String tokenURL = String.format("%s/auth/realms/%s/protocol/openid-connect/token",
                     deployment.getAuthServerUrl(), deployment.getRealm());
             WebTarget target = client.target(tokenURL);
+            if(deployment.getDebug() > 0)
+                target.register(new LoggingFilter());
             String json = target.request(MediaType.APPLICATION_JSON_TYPE)
                     .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE), String.class);
             AccessToken accessToken = JsonSerialization.readValue(json, AccessToken.class);

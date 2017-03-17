@@ -22,25 +22,16 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.HttpClients;
 
 /**
  * Created by starksm on 3/15/17.
  */
 public class Configuration {
-
-    @JsonIgnore
-    private HttpClient httpClient;
 
     @JsonProperty("auth-server-url")
     protected String authServerUrl;
@@ -56,6 +47,9 @@ public class Configuration {
 
     @JsonProperty("credentials")
     protected Map<String, Object> clientCredentials = new HashMap<>();
+
+    @JsonProperty("debug")
+    protected int debug;
 
     public Configuration() {
 
@@ -100,6 +94,13 @@ public class Configuration {
 
     public String getRealm() {
         return realm;
+    }
+
+    public int getDebug() {
+        return debug;
+    }
+    public void setDebug(int debug) {
+        this.debug = debug;
     }
 
     private static class TrustAllManager implements X509TrustManager {

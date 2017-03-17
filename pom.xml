@@ -39,6 +39,8 @@
   </properties>
 
   <build>
+    <finalName>sso-client</finalName>
+
     <pluginManagement>
       <plugins>
         <plugin>
