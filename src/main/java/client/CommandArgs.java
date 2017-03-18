@@ -35,4 +35,6 @@ public class CommandArgs {
     public int debugLevel;
     @Parameter(names = "--displaySSOURL", description = "Obtain and display the RH SSO server auth URL and then exit")
     public boolean displaySSOAuthURL;
+    @Parameter(names = "--outputCurlScript", description = "Generate a bash script to the given filename that performs the query using cURL")
+    public String outputCurlScript;
 }

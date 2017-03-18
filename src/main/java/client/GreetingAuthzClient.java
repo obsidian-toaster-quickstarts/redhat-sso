@@ -17,9 +17,14 @@
 package client;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,6 +63,16 @@ public class GreetingAuthzClient {
             System.err.printf(info.toString());
             System.exit(1);
         }
+        // Handle outputCurlScript
+        if(cmdArgs.outputCurlScript != null) {
+            InputStream scriptStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("token_req_template.sh");
+            Path path = FileSystems.getDefault().getPath(cmdArgs.outputCurlScript);
+            Files.copy(scriptStream, path, StandardCopyOption.REPLACE_EXISTING);
+            scriptStream.close();
+            System.out.printf("Wrote script to: %s\n", path.toFile().getAbsolutePath());
+            System.exit(0);
+        }
+
         GreetingAuthzClient client = new GreetingAuthzClient();
         client.init(cmdArgs);
         System.out.printf("\nRequesting greeting...\n");
