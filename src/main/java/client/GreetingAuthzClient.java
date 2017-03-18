@@ -89,6 +89,13 @@ public class GreetingAuthzClient {
             System.exit(0);
         }
 
+        // Validate the app
+        if(!endpoints.containsKey(cmdArgs.app)) {
+            System.out.flush();
+            System.err.printf("No application endpoints match: %s\nSee available applications above\n", cmdArgs.app);
+            System.exit(1);
+        }
+
         InputStream configStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("keycloak.json");
         if (configStream == null) {
             throw new RuntimeException("Could not find any keycloak.json file in classpath.");
