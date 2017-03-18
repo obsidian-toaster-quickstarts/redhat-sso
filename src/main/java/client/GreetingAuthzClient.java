@@ -82,7 +82,7 @@ public class GreetingAuthzClient {
             String msg = String.format("Failed to load %s from routes. Check 'oc status' for login expiration", SECURE_SSO);
             throw new IllegalStateException(msg);
         }
-        System.out.printf("Using auth server URL: %s\n", authServerURL);
+        System.out.printf("Using auth server URL: %s/auth\n", authServerURL);
         System.out.printf("Available application endpoint names: %s\n", endpoints.keySet().stream().filter(name -> !name.contains("sso")).collect(Collectors.toList()));
         if(cmdArgs.displaySSOAuthURL) {
             // We are done

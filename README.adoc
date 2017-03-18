@@ -169,11 +169,11 @@ RH SSO server, so you can now run the program using:
 [source,shell]
 [redhat-sso 698]$ java -jar target/sso-client.jar --displaySSOURL
 Successful oc get routes: Yes
-Using auth server URL: https://secure-sso-sso.e8ca.engint.openshiftapps.com
+Using auth server URL: https://secure-sso-sso.e8ca.engint.openshiftapps.com/auth
 Available application endpoint names: [secured-vertx-rest, secured-swarm-rest, secured-springboot-rest]
 
 The line starting with *"Using auth server URL:"* is the line that provides the SSO_AUTH_SERVER_URL. In this case it is
-'https://secure-sso-sso.e8ca.engint.openshiftapps.com'. Save that someplace and proceed with deploying one of the
+'https://secure-sso-sso.e8ca.engint.openshiftapps.com/auth'. Save that someplace and proceed with deploying one of the
 secured REST quick starts.
 
 # Deploy the Secured Endpoints
@@ -224,8 +224,8 @@ Usage: client.GreetingAuthzClient [options]
       Default: alice
 
 The only required argument is the --app argument. This needs to match up to the name of the service endpoint as known by OSO. You
-can get a list of the using the `oc get routes` command, for which a sample output where all 3 secured endpoints and the
-RH SSO server have been deployed:
+can get a list of the using the `oc get routes` command. The following table shows sample output where the command
+was run on a OSO project that had all 3 secured endpoints and the RH SSO server have been deployed:
 
 .Sample oc get routes output
 [format="csv", options="header"]
@@ -239,7 +239,18 @@ secured-vertx-rest,secured-vertx-rest-sso.e8ca.engint.openshiftapps.com,,secured
 sso,sso-sso.e8ca.engint.openshiftapps.com,,sso,<all>,
 |===
 
-Choose a name from among the following, depending on what you have deployed:
+The deployed application names is also available via the output of the java command line client used to display the
+SSO_AUTH_SERVER_URL. If you look at the following output:
+
+[source,shell]
+[redhat-sso 698]$ java -jar target/sso-client.jar --displaySSOURL
+Successful oc get routes: Yes
+Using auth server URL: https://secure-sso-sso.e8ca.engint.openshiftapps.com/auth
+Available application endpoint names: [secured-vertx-rest, secured-swarm-rest, secured-springboot-rest]
+
+The line beginning with *Available application endpoint names:* shows the non-SSO related application names.
+
+You will want to choose a name from among the following, depending on what you have deployed:
 
 * secured-springboot-rest
 * secured-swarm-rest
