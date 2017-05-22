@@ -46,8 +46,8 @@ public class AuthzClient {
         form.param("client_id", deployment.getClientId());
         String secret = deployment.getClientCredentials().get("secret").toString();
         form.param("client_secret", secret);
+        Client client = null;
         try {
-            Client client;
             ClientBuilder clientBuilder = ClientBuilder.newBuilder();
             SSLContext sslcontext = deployment.getSSLContext();
             if(sslcontext != null) {
@@ -67,6 +67,10 @@ public class AuthzClient {
             return accessToken.getToken();
         } catch (Exception e) {
             throw new RuntimeException("Failed to request token", e);
+        } finally {
+            if (client != null) {
+                client.close();
+            }
         }
     }
 

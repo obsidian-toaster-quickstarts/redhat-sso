@@ -159,16 +159,20 @@ public class GreetingAuthzClient {
     private Greeting getGreeting(String endpoint, String name) {
         String endpointURL = endpoints.get(endpoint);
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(endpointURL);
-        // Provide the authorization information
-        target.register((ClientRequestFilter) requestContext -> {
-            requestContext.getHeaders().add("Authorization", "Bearer "+token);
-        });
-        if(cmdArgs.debugLevel > 0)
-            target.register(new LoggingFilter());
-        IGreeting greetingClient = ((ResteasyWebTarget)target).proxy(IGreeting.class);
-        Greeting greeting = greetingClient.greeting(name);
-        return greeting;
+        try {
+            WebTarget target = client.target(endpointURL);
+            // Provide the authorization information
+            target.register((ClientRequestFilter) requestContext -> {
+				requestContext.getHeaders().add("Authorization", "Bearer "+token);
+			});
+            if(cmdArgs.debugLevel > 0)
+				target.register(new LoggingFilter());
+            IGreeting greetingClient = ((ResteasyWebTarget)target).proxy(IGreeting.class);
+            Greeting greeting = greetingClient.greeting(name);
+            return greeting;
+        } finally {
+            client.close();
+        }
     }
 
 }
