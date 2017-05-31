@@ -48,7 +48,7 @@ public class SsoIT {
         authzClient = AuthzClient.create(config);
 
         applicationUrls = routes.stream()
-                .filter(r -> !r.getMetadata().getName().contains("sso"))
+                .filter(r -> r.getMetadata().getName().contains("secured"))
                 .map(r -> "http://" + r.getSpec().getHost())
                 .collect(toList());
 
