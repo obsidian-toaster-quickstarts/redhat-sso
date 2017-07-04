@@ -25,7 +25,7 @@ import javax.ws.rs.QueryParam;
  */
 public interface IGreeting {
     @GET
-    @Path("/greeting")
+    @Path("/api/greeting")
     @Produces("application/json")
     public Greeting greeting(@QueryParam("name") String name);
 }
