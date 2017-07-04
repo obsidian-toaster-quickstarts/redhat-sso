@@ -59,6 +59,7 @@ public class SsoIT {
         Client client = ClientBuilder.newClient();
         try {
             WebTarget target = client.target(url);
+            System.out.println("URL : " + url);
             target.register((ClientRequestFilter) requestContext -> {
                 requestContext.getHeaders().add("Authorization", "Bearer " + token);
             });
