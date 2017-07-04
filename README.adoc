@@ -181,9 +181,9 @@ secured REST quick starts.
 Now you can deploy one or more of the secured versions of the quick starts by cloning them and following the OSO deployment
 instructions. Current secured quick starts include:
 
-* https://github.com/obsidian-toaster-quickstarts/secured_rest_swarm[secured_rest_swarm]
-* https://github.com/obsidian-toaster-quickstarts/secured_rest-springboot[secured_rest-springboot]
-* https://github.com/obsidian-toaster-quickstarts/secured_rest-vertx[secured_rest-vertx]
+* https://github.com/wildfly-swarm-openshiftio-boosters/wfswarm-rest-http-secured[secured_rest_swarm]
+* https://github.com/snowdrop/spring-boot-http-secured-booster[secured_rest-spring-boot]
+* https://github.com/openshiftio-vertx-boosters/vertx-secured-http-booster[secured_rest-vertx]
 
 Checkout one or more of these using the --recursive option to clone, e.g.,
 `git clone --recursive https://github.com/obsidian-toaster-quickstarts/secured_rest_swarm`
