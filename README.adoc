@@ -186,7 +186,7 @@ instructions. Current secured quick starts include:
 * https://github.com/openshiftio-vertx-boosters/vertx-secured-http-booster[secured_rest-vertx]
 
 Checkout one or more of these using the --recursive option to clone, e.g.,
-`git clone --recursive https://github.com/obsidian-toaster-quickstarts/secured_rest_swarm`
+`git clone --recursive https://github.com/wildfly-swarm-openshiftio-boosters/wfswarm-rest-http-secured`
 
 This pulls in this redhat-sso quick start as a submodule of that project so that you can work from within that subproject.
 Clone one of these projects now, and then come back here to test access the secured endpoint once you have completed the
