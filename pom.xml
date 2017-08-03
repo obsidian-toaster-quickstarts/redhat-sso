@@ -21,6 +21,7 @@
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
     <version>21</version>
+    <relativePath/>
   </parent>
   <groupId>org.obsidiantoaster.quickstart</groupId>
   <artifactId>redhat-sso</artifactId>
