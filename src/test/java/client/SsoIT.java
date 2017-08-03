@@ -8,7 +8,6 @@ import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.ws.rs.ForbiddenException;
@@ -93,7 +92,6 @@ public class SsoIT {
     }
 
     @Test
-    @Ignore
     public void adminUser() {
         String token = authzClient.obtainAccessToken("admin", "admin");
         for (String url : applicationUrls) {
