@@ -167,10 +167,8 @@ contains a command line program that you can run to determine this information. 
 RH SSO server, so you can now run the program using:
 
 [source,shell]
-[redhat-sso 698]$ java -jar target/sso-client.jar --displaySSOURL
-Successful oc get routes: Yes
-Using auth server URL: https://secure-sso-sso.e8ca.engint.openshiftapps.com/auth
-Available application endpoint names: [secured-vertx-rest, secured-swarm-rest, secured-springboot-rest]
+[redhat-sso 698]$ echo "https://$(oc get routes | grep "^secure-sso"| tr -s ' ' | cut -d' ' -f2)/auth"
+https://secure-sso-sso.e8ca.engint.openshiftapps.com/auth
 
 The line starting with *"Using auth server URL:"* is the line that provides the SSO_AUTH_SERVER_URL. In this case it is
 'https://secure-sso-sso.e8ca.engint.openshiftapps.com/auth'. Save that someplace and proceed with deploying one of the
@@ -193,39 +191,11 @@ Clone one of these projects now, and then come back here to test access the secu
 deployment steps from the secured REST endpoint quick start.
 
 # Access the Secured Endpoints
-Once you have one of the secured endpoints deployed to OSO, you can access them using the Java command line client included
-in this project. It is packaged as an executable jar and is located at target/sso-client.jar. To run the client, use
+Once you have one of the secured endpoints deployed to OSO, you can access them using your web browser. In order to
+locate the location of your application use
 
 [source,shell]
-java -jar target/sso-client.jar -app ...
-
-The full set of command arguments that you can specify can be seen by passing -help:
-[source,shell]
-[redhat-sso 699]$ java -jar target/sso-client.jar -help
-Specifiy the name of the application endpoint with --app
-Usage: client.GreetingAuthzClient [options]
-  Options:
-    --app
-      The name of the rest endpoint to access
-    --debug
-      The debugging level, > 0 means more verbosity
-      Default: 0
-    --displaySSOURL
-      Obtain and display the RH SSO server auth URL and then exit
-      Default: false
-    --from
-      The name to pass to the greeting endpoint
-      Default: World
-    --password
-      The SSO Realm password to authenticate with
-      Default: password
-    --user
-      The SSO Realm username to authenticate as
-      Default: alice
-
-The only required argument is the --app argument. This needs to match up to the name of the service endpoint as known by OSO. You
-can get a list of the using the `oc get routes` command. The following table shows sample output where the command
-was run on a OSO project that had all 3 secured endpoints and the RH SSO server have been deployed:
+oc get routes
 
 .Sample oc get routes output
 [format="csv", options="header"]
@@ -239,115 +209,8 @@ secured-vertx-rest,secured-vertx-rest-sso.e8ca.engint.openshiftapps.com,,secured
 sso,sso-sso.e8ca.engint.openshiftapps.com,,sso,<all>,
 |===
 
-The deployed application names is also available via the output of the java command line client used to display the
-SSO_AUTH_SERVER_URL. If you look at the following output:
-
-[source,shell]
-[redhat-sso 698]$ java -jar target/sso-client.jar --displaySSOURL
-Successful oc get routes: Yes
-Using auth server URL: https://secure-sso-sso.e8ca.engint.openshiftapps.com/auth
-Available application endpoint names: [secured-vertx-rest, secured-swarm-rest, secured-springboot-rest]
-
-The line beginning with *Available application endpoint names:* shows the non-SSO related application names.
-
 You will want to choose a name from among the following, depending on what you have deployed:
 
 * secured-springboot-rest
 * secured-swarm-rest
 * secured-vertx-rest
-
-## Example Client Output
-
-### secured-swarm-rest with default user
-[source,shell]
-[redhat-sso 657]$ java -jar target/sso-client.jar --app secured-swarm-rest
-Successful oc get routes: Yes
-Using auth server URL: https://secure-sso-sso.e8ca.engint.openshiftapps.com
-Available application endpoint names: [secured-vertx-rest, secured-swarm-rest, secured-springboot-rest]
-{
-  "id" : 15,
-  "content" : "Hello, World!",
-  "node" : "cb5aaf4f-95a7-47d6-a8cb-4f6e0be762b7"
-}
-
-### secured-swarm-rest with default user, bad password
-[source,shell]
-[redhat-sso 658]$ java -jar target/sso-client.jar --app secured-swarm-rest --password bad
-Successful oc get routes: Yes
-Using auth server URL: https://secure-sso-sso.e8ca.engint.openshiftapps.com
-Available application endpoint names: [secured-vertx-rest, secured-swarm-rest, secured-springboot-rest]
-Exception in thread "main" java.lang.RuntimeException: Failed to request token
-	at client.authz.AuthzClient.obtainAccessToken(AuthzClient.java:67)
-	at client.GreetingAuthzClient.init(GreetingAuthzClient.java:94)
-	at client.GreetingAuthzClient.main(GreetingAuthzClient.java:61)
-Caused by: javax.ws.rs.NotAuthorizedException: HTTP 401 Unauthorized
-	at org.jboss.resteasy.client.jaxrs.internal.ClientInvocation.handleErrorStatus(ClientInvocation.java:214)
-	at org.jboss.resteasy.client.jaxrs.internal.ClientInvocation.extractResult(ClientInvocation.java:189)
-	at org.jboss.resteasy.client.jaxrs.internal.ClientInvocation.invoke(ClientInvocation.java:492)
-	at org.jboss.resteasy.client.jaxrs.internal.ClientInvocationBuilder.post(ClientInvocationBuilder.java:199)
-	at client.authz.AuthzClient.obtainAccessToken(AuthzClient.java:63)
-	... 2 more
-
-### secured-swarm-rest with admin user
-[source,shell]
-[redhat-sso 660]$ java -jar target/sso-client.jar --app secured-swarm-rest --user admin --password admin
-Successful oc get routes: Yes
-Using auth server URL: https://secure-sso-sso.e8ca.engint.openshiftapps.com
-Available application endpoint names: [secured-vertx-rest, secured-swarm-rest, secured-springboot-rest]
-Exception in thread "main" javax.ws.rs.ForbiddenException: HTTP 403 Forbidden
-	at org.jboss.resteasy.client.jaxrs.internal.ClientInvocation.handleErrorStatus(ClientInvocation.java:216)
-	at org.jboss.resteasy.client.jaxrs.internal.ClientInvocation.extractResult(ClientInvocation.java:189)
-	at org.jboss.resteasy.client.jaxrs.internal.proxy.extractors.BodyEntityExtractor.extractEntity(BodyEntityExtractor.java:60)
-	at org.jboss.resteasy.client.jaxrs.internal.proxy.ClientInvoker.invoke(ClientInvoker.java:107)
-	at org.jboss.resteasy.client.jaxrs.internal.proxy.ClientProxy.invoke(ClientProxy.java:76)
-	at com.sun.proxy.$Proxy22.greeting(Unknown Source)
-	at client.GreetingAuthzClient.getGreeting(GreetingAuthzClient.java:139)
-	at client.GreetingAuthzClient.main(GreetingAuthzClient.java:62)
-
-### secured-vertx-rest with admin user, debug 2
-[source,shell]
-[redhat-sso 688]$ java -jar target/sso-client.jar --app secured-vertx-rest --user admin --password admin --debug 2
-Successful oc get routes: Yes
-Using auth server URL: https://secure-sso-sso.e8ca.engint.openshiftapps.com
-Available application endpoint names: [secured-vertx-rest, secured-swarm-rest, secured-springboot-rest]
-Sending POST to: https://secure-sso-sso.e8ca.engint.openshiftapps.com/auth/realms/master/protocol/openid-connect/token
-Headers:
-  Accept: application/json
-  Content-Type: application/x-www-form-urlencoded
-Body: grant_type=password&username=admin&password=admin&client_id=demoapp&client_secret=1daa57a2-b60e-468b-a3ac-25bd2dc2eadc
------------
-Token: eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJkNWE1ZTg0YS00NGUyLTQzNTYtOTBiOS0zZTAwOWFiNjU2OGMiLCJleHAiOjE0ODk3MzExNjcsIm5iZiI6MCwiaWF0IjoxNDg5NzMxMTA3LCJpc3MiOiJodHRwczovL3NlY3VyZS1zc28tc3NvLmU4Y2EuZW5naW50Lm9wZW5zaGlmdGFwcHMuY29tL2F1dGgvcmVhbG1zL21hc3RlciIsImF1ZCI6ImRlbW9hcHAiLCJzdWIiOiIyNjI2NzdmYS0xMDJiLTRkNjAtOWE2MS1iMWNhMmFmZDY2M2EiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJkZW1vYXBwIiwic2Vzc2lvbl9zdGF0ZSI6ImNmNDIwOTA0LWI0OTYtNDVlZS04OTIxLTExNDM1MTkwNDU2MCIsImNsaWVudF9zZXNzaW9uIjoiYjYwZjM3YzItMjFhMC00MjMyLTk1ZTktMzFmMDE2ZmM3ZmRkIiwiYWxsb3dlZC1vcmlnaW5zIjpbXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImNyZWF0ZS1yZWFsbSIsImFkbWluIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsibWFzdGVyLXJlYWxtIjp7InJvbGVzIjpbIm1hbmFnZS1ldmVudHMiLCJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhbG0iLCJtYW5hZ2UtcmVhbG0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsInZpZXctZXZlbnRzIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsInZpZXctdXNlcnMiLCJ2aWV3LWNsaWVudHMiLCJtYW5hZ2UtY2xpZW50cyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsInZpZXctcHJvZmlsZSJdfX0sIm5hbWUiOiIiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiJ9.kO0dHEY2V5lKVyz3JinqFww7IfL5wYn_6k7F-NfDLJ3O5skrAE64sZiP-7e9eCdQs5-r6SkOJL_3hhYZTu6XRAB23S_Dqo3AtknMw67EB_BAPDYtsKzxGPrJWUVdo7OJFGSHps2jXGPSkW74bt7LfgfurwxbFZx6Ga466NpyOawWEuSUNkQ3r2_KqpRMiasG5pbk3Wd7e5nspy1i8_GTwhSOumfcthyRnjhb_nPoJQFu6hKSXkHIp4QgAb_g2_apGUd3y8HoNTvncx-upTbNDWwvXmogvDn7F38wSsFfvbKfzicd1lXloO9tCAD9jbzDsSItWaMs7jGvS3xen2Uwog
-Requesting greeting...
-Sending GET to: http://secured-vertx-rest-sso.e8ca.engint.openshiftapps.com/greeting?name=World
-Headers:
-  Accept: application/json
-  Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJkNWE1ZTg0YS00NGUyLTQzNTYtOTBiOS0zZTAwOWFiNjU2OGMiLCJleHAiOjE0ODk3MzExNjcsIm5iZiI6MCwiaWF0IjoxNDg5NzMxMTA3LCJpc3MiOiJodHRwczovL3NlY3VyZS1zc28tc3NvLmU4Y2EuZW5naW50Lm9wZW5zaGlmdGFwcHMuY29tL2F1dGgvcmVhbG1zL21hc3RlciIsImF1ZCI6ImRlbW9hcHAiLCJzdWIiOiIyNjI2NzdmYS0xMDJiLTRkNjAtOWE2MS1iMWNhMmFmZDY2M2EiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJkZW1vYXBwIiwic2Vzc2lvbl9zdGF0ZSI6ImNmNDIwOTA0LWI0OTYtNDVlZS04OTIxLTExNDM1MTkwNDU2MCIsImNsaWVudF9zZXNzaW9uIjoiYjYwZjM3YzItMjFhMC00MjMyLTk1ZTktMzFmMDE2ZmM3ZmRkIiwiYWxsb3dlZC1vcmlnaW5zIjpbXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImNyZWF0ZS1yZWFsbSIsImFkbWluIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsibWFzdGVyLXJlYWxtIjp7InJvbGVzIjpbIm1hbmFnZS1ldmVudHMiLCJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhbG0iLCJtYW5hZ2UtcmVhbG0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsInZpZXctZXZlbnRzIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsInZpZXctdXNlcnMiLCJ2aWV3LWNsaWVudHMiLCJtYW5hZ2UtY2xpZW50cyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsInZpZXctcHJvZmlsZSJdfX0sIm5hbWUiOiIiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiJ9.kO0dHEY2V5lKVyz3JinqFww7IfL5wYn_6k7F-NfDLJ3O5skrAE64sZiP-7e9eCdQs5-r6SkOJL_3hhYZTu6XRAB23S_Dqo3AtknMw67EB_BAPDYtsKzxGPrJWUVdo7OJFGSHps2jXGPSkW74bt7LfgfurwxbFZx6Ga466NpyOawWEuSUNkQ3r2_KqpRMiasG5pbk3Wd7e5nspy1i8_GTwhSOumfcthyRnjhb_nPoJQFu6hKSXkHIp4QgAb_g2_apGUd3y8HoNTvncx-upTbNDWwvXmogvDn7F38wSsFfvbKfzicd1lXloO9tCAD9jbzDsSItWaMs7jGvS3xen2Uwog
-Exception in thread "main" javax.ws.rs.ForbiddenException: HTTP 403 Forbidden
-	at org.jboss.resteasy.client.jaxrs.internal.ClientInvocation.handleErrorStatus(ClientInvocation.java:216)
-	at org.jboss.resteasy.client.jaxrs.internal.ClientInvocation.extractResult(ClientInvocation.java:189)
-	at org.jboss.resteasy.client.jaxrs.internal.proxy.extractors.BodyEntityExtractor.extractEntity(BodyEntityExtractor.java:60)
-	at org.jboss.resteasy.client.jaxrs.internal.proxy.ClientInvoker.invoke(ClientInvoker.java:107)
-	at org.jboss.resteasy.client.jaxrs.internal.proxy.ClientProxy.invoke(ClientProxy.java:76)
-	at com.sun.proxy.$Proxy21.greeting(Unknown Source)
-	at client.GreetingAuthzClient.getGreeting(GreetingAuthzClient.java:145)
-	at client.GreetingAuthzClient.main(GreetingAuthzClient.java:64)
-
-
-
-## Decoding JWT
-There is a nice online decoder that you can use to decode a JWT to see it's contents at https://jwt.io/#debugger-io[JWT Debugger].
-To use it, go to the site, and first use the Algorithm drop down menu to choose RS256. At that point you will a text input
-box in the VERIFY SIGNATURE section that has text beginning with "-----BEGIN PUBLIC KEY-----". Copy the entire
-"-----BEGIN...-----END PUBLIC KEY-----" block from here:
-
-[source]
------BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoETnPmN55xBJjRzN/cs30OzJ9olkteLVNRjzdTxFOyRtS2ovDfzdhhO9XzUcTMbIsCOAZtSt8K+6yvBXypOSYvI75EUdypmkcK1KoptqY5KEBQ1KwhWuP7IWQ0fshUwD6jI1QWDfGxfM/h34FvEn/0tJ71xN2P8TI2YanwuDZgosdobx/PAvlGREBGuk4BgmexTOkAdnFxIUQcCkiEZ2C41uCrxiS4CEe5OX91aK9HKZV4ZJX6vnqMHmdDnsMdO+UFtxOBYZio+a1jP4W3d7J5fGeiOaXjQCOpivKnP2yU2DPdWmDMyVb67l8DRA+jh0OJFKZ5H2fNgE3II59vdsRwIDAQAB
------END PUBLIC KEY-----
-
-and replace all of the text in that input box with this text. This is the master realm public key from this quick start's
-RH SSO server deployment.
-
-Now, take the base64 encoding of a token from one of the client runs where you specified a --debug value > 0, and paste it
-into the left text input box titled Encoded PASTE a TOKEN HERE. When you do that, it's header, payload sections will populate,
-and there should be a Signature Verified box at the bottom.
