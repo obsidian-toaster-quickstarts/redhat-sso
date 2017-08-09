@@ -93,7 +93,6 @@ public class SsoIT {
     }
 
     @Test
-    @Ignore
     public void adminUser() {
         String token = authzClient.obtainAccessToken("admin", "admin");
         for (String url : applicationUrls) {
