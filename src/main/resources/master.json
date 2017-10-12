@@ -73,7 +73,7 @@
         {
           "id": "0a75851e-63f0-45d2-8e5e-d43218aa9a08",
           "name": "booster-admin",
-          "description": "A Vert.X administrator role",
+          "description": "A Booster administrator role",
           "scopeParamRequired": false,
           "composite": false
         },
@@ -92,7 +92,7 @@
           {
             "id": "1f4bea15-a2b3-4a34-afc9-c0e264be8136",
             "name": "booster-admin",
-            "description": "A Vert.x administrator client",
+            "description": "A Booster administrator client",
             "scopeParamRequired": false,
             "composite": false
           }
