@@ -6,7 +6,7 @@
     "displayNameHtml": "<strong>Red Hat</strong><sup>®</sup> Single Sign On",
     "notBefore": 0,
     "revokeRefreshToken": false,
-    "accessTokenLifespan": 60,
+    "accessTokenLifespan": 600,
     "accessTokenLifespanForImplicitFlow": 900,
     "ssoSessionIdleTimeout": 1800,
     "ssoSessionMaxLifespan": 36000,
